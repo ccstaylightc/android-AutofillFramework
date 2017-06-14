@@ -73,12 +73,14 @@ public class MyAutofillService extends AutofillService {
         if (responseAuth) {
             // If the entire Autofill Response is authenticated, AuthActivity is used
             // to generate Response.
-            IntentSender sender = AuthActivity.getAuthIntentSenderForResponse(this);
-            RemoteViews presentation = AutofillHelper
-                    .newRemoteViews(getPackageName(), getString(R.string.autofill_sign_in_prompt));
-            responseBuilder
-                    .setAuthentication(autofillFields.getAutofillIds(), sender, presentation);
-            callback.onSuccess(responseBuilder.build());
+            if (autofillFields.getAutofillIds().length > 0) {
+                IntentSender sender = AuthActivity.getAuthIntentSenderForResponse(this);
+                RemoteViews presentation = AutofillHelper
+                        .newRemoteViews(getPackageName(), getString(R.string.autofill_sign_in_prompt));
+                responseBuilder
+                        .setAuthentication(autofillFields.getAutofillIds(), sender, presentation);
+                callback.onSuccess(responseBuilder.build());
+            }
         } else {
             boolean datasetAuth = MyPreferences.getInstance(this).isDatasetAuth();
             HashMap<String, FilledAutofillFieldCollection> clientFormDataMap =
